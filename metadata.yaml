@@ -1,5 +1,5 @@
-homepage: "https://www.example.com"
-documentation: "https://www.example.com/documentation"
+homepage: "https://www.arkeero.com"
+documentation: "https://www.arkeero.com/pixel"
 versions:
-  - sha: 5f02a788b90ae804f86b04aa24af8937e567874a
+  - sha: 2d2b10ed49c19666bd26751a1507bbc885afccbd
     changeNotes: Initial Version
