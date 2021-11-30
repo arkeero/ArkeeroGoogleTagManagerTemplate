@@ -30,6 +30,8 @@ To register leads, the transaction pixel must be configured. Receive three optio
 
 Is necessary that this tag is the last one to fire and have do at the moment the transaction happen. It's common that this happens on the Thank you page but can be in other moment (event lead or Send form.). Be careful of where this is set up, as if it fires earlier or later it can be an issue because we won't count the correct transactions.
 
+## License
+[Apache](https://www.apache.org/licenses/LICENSE-2.0)
 Make sure to set a tag sequence from Advanced Settings and then Tag Sequencing.
 - Select the "Fire a setup tag before Arkeero Lead fires".
 - Select the set_arktrid tag from the menu.
