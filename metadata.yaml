@@ -1,7 +1,5 @@
-homepage: "https://www.arkeero.com"
-documentation: "https://arkeero.com/pixel"
+homepage: "https://www.example.com"
+documentation: "https://www.example.com/documentation"
 versions:
- # Latest version
-   - sha: 41ad49ccaa86ce659355e8b934b342fad518bb03
-    changeNotes: Initial release.
-  # Older versions
+  - sha: 5f02a788b90ae804f86b04aa24af8937e567874a
+    changeNotes: Initial Version
