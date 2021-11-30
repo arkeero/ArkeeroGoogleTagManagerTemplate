@@ -1,5 +1,9 @@
 homepage: "https://www.arkeero.com"
 documentation: "https://arkeero.com/pixel"
 versions:
+ # Latest version
+   - sha: 97bf5e3790a96097a74c8c682e606ee91e970fb5
+    changeNotes: Upload License
+  # Older versions
   - sha: 41ad49ccaa86ce659355e8b934b342fad518bb03
     changeNotes: Initial release.
