@@ -2,12 +2,12 @@
 This is an **official** template for Arkeero.
 
 # Author
-Arkeero (https://www.arkeero.com/).
+Arkeero (https://arkeero.com/).
 
 # Release notes
 | Date | Notes |
 |------|-------|
-| 30 Nov 2021 | First version of the template released. |
+| 06 Jul 2022 | First version of the template released. |
 
 
 

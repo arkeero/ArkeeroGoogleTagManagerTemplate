@@ -45,6 +45,10 @@ ___TEMPLATE_PARAMETERS___
       {
         "value": "pageview",
         "displayValue": "PageView"
+      },
+      {
+        "value": "go2perseo",
+        "displayValue": "Seguimiento (Display)"
       }
     ],
     "simpleValueType": true,
@@ -94,6 +98,11 @@ ___TEMPLATE_PARAMETERS___
       {
         "paramName": "chk_offer",
         "paramValue": true,
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "PixelType",
+        "paramValue": "go2perseo",
         "type": "EQUALS"
       }
     ],
@@ -330,12 +339,14 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
-const log = require('logToConsole');
+const log             = require('logToConsole');
 const queryPermission = require('queryPermission');
-const sendPixel = require('sendPixel');
-const setCookie = require('setCookie');
+const sendPixel       = require('sendPixel');
+const setCookie       = require('setCookie');
 const getCookieValues = require('getCookieValues');
-const getUrl = require('getUrl');
+const getUrl          = require('getUrl');
+const decode          = require('decodeUri');
+const encodeUri       = require('encodeUri');
 
 /*
  * Tipo de pixel Setup
@@ -350,47 +361,52 @@ if( ( data.PixelType === 'pageview') ){
   const cookieName = 'arktrid';
   let cookieValues;
 
-  var urltransactionParams = "https://prs.arkeero.net/";
-  var PixelType = "";
-  var txt_Goal_ID = "";
-  var offer = "";
-  var transactionID = "";
-  var arktrid = "";
-  var revenue = "";
+  // var urltransactionParams = "https://prs.arkeero.net/";
+
+  var urltransactionParams = ( ( data.PixelType === 'go2perseo') ? "https://ads.go2perseo.com/" : "https://prs.arkeero.net/" );
+
+
+  var PixelType      = "";
+  var txt_Goal_ID    = "";
+  var offer          = "";
+  var transactionID  = "";
+  var arktrid        = "";
+  var revenue        = "";
   var txt_customVar1 = "";
   var txt_customVar2 = "";
   var txt_customVar3 = "";
   var txt_customVar4 = "";
   var txt_customVar5 = "";
-  var join = ( ( data.PixelType === 'trk_o') ? '' : '&');
-  var url = "";
+  var join           = ( ( data.PixelType === 'trk_o' || data.PixelType === 'go2perseo' ) ? '' : '&');
+  var url            = "";
 
   // Buscando cookie arktrid...
   if (queryPermission('get_cookies', cookieName)) {
     cookieValues = getCookieValues(cookieName);
   }
 
-  PixelType = ( (typeof(data.PixelType) !== "undefined") ? data.PixelType : "");
-  txt_Goal_ID = ( (typeof(data.txt_Goal_ID) !== "undefined") ? "goal_id=" + data.txt_Goal_ID : "");
-  offer = ( (typeof(data.offer) !== "undefined") ? "&px=" + data.offer : "");
-  transactionID = ( (data.transactionID !== "") ? join + "adv_sub=" + data.transactionID : join + "adv_sub=SUBID");
-  arktrid = "&trid=" + cookieValues;
-  revenue = ( (typeof(data.txt_revenue) !== "undefined") ? "&amount=" + data.txt_revenue : "");
-  txt_customVar1 = ( (typeof(data.txt_customVar1) !== "undefined") ? "&sub_id1=" + data.txt_customVar1 : "");
-  txt_customVar2 = ( (typeof(data.txt_customVar2) !== "undefined") ? "&sub_id2=" + data.txt_customVar2 : "");
-  txt_customVar3 = ( (typeof(data.txt_customVar3) !== "undefined") ? "&sub_id3=" + data.txt_customVar3 : "");
-  txt_customVar4 = ( (typeof(data.txt_customVar4) !== "undefined") ? "&sub_id4=" + data.txt_customVar4 : "");
-  txt_customVar5 = ( (typeof(data.txt_customVar5) !== "undefined") ? "&sub_id5=" + data.txt_customVar5 : "");
-  url = urltransactionParams + PixelType + "?" + txt_Goal_ID + transactionID + arktrid + offer + revenue + txt_customVar1 + txt_customVar2 + txt_customVar3 + txt_customVar4 + txt_customVar5;
-  
+  PixelType      = ( (typeof(data.PixelType)      !== "undefined") ? data.PixelType                         : "");
+  txt_Goal_ID    = ( (typeof(data.txt_Goal_ID)    !== "undefined") ? "goal_id=" + data.txt_Goal_ID          : "");
+  offer          = ( (typeof(data.offer)          !== "undefined") ? "&px=" + data.offer                    : "");
+  transactionID  = ( (data.transactionID          !== "")          ? join + "adv_sub=" + data.transactionID : join + "adv_sub=SUBID");
+  arktrid        = "&trid=" + cookieValues;
+  revenue        = ( (typeof(data.txt_revenue)    !== "undefined") ? "&amount=" + data.txt_revenue          : "");
+  txt_customVar1 = ( (typeof(data.txt_customVar1) !== "undefined") ? "&sub_id1=" + data.txt_customVar1      : "");
+  txt_customVar2 = ( (typeof(data.txt_customVar2) !== "undefined") ? "&sub_id2=" + data.txt_customVar2      : "");
+  txt_customVar3 = ( (typeof(data.txt_customVar3) !== "undefined") ? "&sub_id3=" + data.txt_customVar3      : "");
+  txt_customVar4 = ( (typeof(data.txt_customVar4) !== "undefined") ? "&sub_id4=" + data.txt_customVar4      : "");
+  txt_customVar5 = ( (typeof(data.txt_customVar5) !== "undefined") ? "&sub_id5=" + data.txt_customVar5      : "");
+  url            = encodeUri(urltransactionParams + PixelType + "?" + txt_Goal_ID + transactionID + arktrid + offer + revenue + txt_customVar1 + txt_customVar2 + txt_customVar3 + txt_customVar4 + txt_customVar5);
+  log(url);
   getArk(url);
 
-} //end_else 
+}
 
 function getArk(pixel) {
   // enviando pixel
   if (queryPermission('send_pixel', pixel)) {
-    sendPixel(pixel);
+    // sendPixel(pixel);
+    sendPixel(pixel, data.gtmOnSuccess, data.gtmOnFailure);
   }
 }
 
@@ -408,7 +424,7 @@ function setArktrid(){
 
   // Busca url arktrid
   const arktrid = getUrl('query', false, null, 'arktrid');
-  arkjson = arktrid.split("&");
+  arkjson       = arktrid.split("&");
   for( var i in arkjson){
     if( arkjson[i].indexOf("arktrid") !== -1 ){
       trid = arkjson[i];
@@ -422,7 +438,7 @@ function setArktrid(){
   cookieValues = getCookieValues(cookieName);
 }
 
-data.gtmOnSuccess();
+// data.gtmOnSuccess();
 
 
 ___WEB_PERMISSIONS___
@@ -492,6 +508,9 @@ ___WEB_PERMISSIONS___
           }
         }
       ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
     },
     "isRequired": true
   },
@@ -595,6 +614,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 29/11/2021 16:42:33
+Created on 6/7/2022, 23:36:01
 
 
